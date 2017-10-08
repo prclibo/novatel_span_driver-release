@@ -39,6 +39,28 @@ import serial
 import struct
 from cStringIO import StringIO
 
+from time import strftime, localtime
+
+class DumpableSock:
+    def __init__(self, sock, path = None):
+        self.sock = sock
+
+        path = rospy.get_param('~dump_path', None)
+        path = './' + strftime('%Y-%m-%d-%H-%M-%S', localtime()) + '.nvtbin'
+        self.fd = open(path,'wb')
+
+    def __del__(self):
+        self.fd.close()
+        # print 'File CLOSED'
+
+    def recv(self, length):
+        data = self.sock.recv(length)
+        self.fd.write(data)
+        return data
+
+    def send(self, data):
+        self.sock.send(data)
+
 
 class Port(threading.Thread):
 
@@ -49,7 +71,7 @@ class Port(threading.Thread):
 
     def __init__(self, sock, **opts):
         super(Port, self).__init__()
-        self.sock = sock
+        self.sock = DumpableSock(sock)
         self.opts = opts
         self.daemon = False
         self.finish = threading.Event()
@@ -60,7 +82,6 @@ class Port(threading.Thread):
         Returns (header, pkt_str)
         Returns None, None when no data. """
 
-        header = msg.CommonHeader()
         footer = msg.CommonFooter()
 
         try:
@@ -80,24 +101,35 @@ class Port(threading.Thread):
             if sync != "\x44":
                 raise ValueError("Bad sync2 byte, expected 0x44, received 0x%x" % ord(sync[0]))
             sync = self.sock.recv(1)
-            if sync != "\x12":
+            if sync == "\x12":
+                header = msg.CommonHeader()
+            elif sync == "\x13":
+                header = msg.ShortHeader()
+            else:
                 raise ValueError("Bad sync3 byte, expected 0x12, received 0x%x" % ord(sync[0]))
 
             # Four byte offset to account for 3 sync bytes and one header length byte already consumed.
-            header_length = ord(self.sock.recv(1)[0]) - 4
-            if header_length != header.translator().size:
+            if sync == "\x12":
+                length = ord(self.sock.recv(1)[0]) - 4
+            elif sync == "\x13":
+                length = ord(self.sock.recv(1)[0])
+
+            if sync == "\x12" and length != header.translator().size:
                 raise ValueError("Bad header length. Expected %d, got %d" %
-                                 (header.translator().size, header_length))
+                                 (header.translator().size, length))
 
         except (socket.timeout, serial.SerialTimeoutException) as e:
             return None, None
 
-        header_str = self.sock.recv(header_length)
+        header_str = self.sock.recv(header.translator().size)
         header_data = StringIO(header_str)
         header.translator().deserialize(header_data)
 
-        packet_str = self.sock.recv(header.length)
+        if sync == "\x12":
+            length = header.length
+        packet_str = self.sock.recv(length)
         footer_data = StringIO(self.sock.recv(footer.translator().size))
+
 
         return header, packet_str
 

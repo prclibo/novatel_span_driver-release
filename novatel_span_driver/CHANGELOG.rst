@@ -2,8 +2,15 @@
 Changelog for package novatel_span_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+101.0.1 (2017-10-08)
+--------------------
+* update with dumpable sock and short header msg
+* sock can now dump received data to file
+* improved to support novatel usb and onnew log_request option
+* fix typo
+* fixed typeo
+* Contributors: Bo Li
+
 * Merge remote-tracking branch 'origin/fix_rpy' into trunk
 * Latch navsat/origin so that it is available to nodes that start after the NovAtel driver (`#12 <https://github.com/prclibo/novatel_span_driver/issues/12>`_)
 * Fix bad == when publishing IMU message (`#19 <https://github.com/prclibo/novatel_span_driver/issues/19>`_)

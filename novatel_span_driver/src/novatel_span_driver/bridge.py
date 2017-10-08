@@ -87,7 +87,7 @@ def create_sock(name):
         elif rospy.has_param('~serial_port'):
             port = rospy.get_param('~serial_port')
             baud = rospy.get_param('~serial_baud', 9600)
-            sock = serial.Serial(port=port, baudrate=baud, timeout=SOCKET_TIMEOUT)
+            sock = serial.Serial(port=port, baudrate=baud, timeout=SOCKET_TIMEOUT, rtscts=True, dsrdtr=True)
             rospy.loginfo("Successfully connected to %%s port at %s:%d" % (port, baud) % name)
 
             # TODO: Fix this monkey patch
@@ -179,13 +179,20 @@ def configure_receiver(port):
 
         logger = receiver_config.get('log_request', [])
         rospy.loginfo("Enabling %i log outputs from SPAN system." % len(logger))
+        port.send('unlogall\r\n')
         for log in logger:
-            port.send('log ' + log + ' ontime ' + str(logger[log]) + '\r\n')
+            if str(logger[log]).lower() == 'new':
+                cmd = 'log ' + log + ' onnew' + '\r\n'
+            else:
+                cmd = 'log ' + log + ' ontime ' + str(logger[log]) + '\r\n'
+            rospy.logerr(cmd)
+            port.send(cmd)
 
         commands = receiver_config.get('command', [])
         rospy.loginfo("Sending %i user-specified initialization commands to SPAN system." % len(commands))
         for cmd in commands:
             port.send(cmd + ' ' + str(commands[cmd]) + '\r\n')
+            rospy.logerr(cmd + ' ' + str(commands[cmd]))
 
 
 def shutdown():
