@@ -37,6 +37,8 @@ from geometry_msgs.msg import Quaternion, Point, Pose, Twist
 
 from math import radians, pow
 
+from time_conversions import unix_time_from_gps
+
 # FIXED COVARIANCES
 # TODO: Work these out...
 IMU_ORIENT_COVAR = [1e-3, 0, 0,
@@ -109,8 +111,12 @@ class NovatelPublisher(object):
     def bestpos_handler(self, bestpos):
         navsat = NavSatFix()
 
+        gps_sec = bestpos.header.gps_week * 7 * 24 * 3600 +\
+                1e-3 * bestpos.header.gps_week_milliseconds
+        unix_sec = unix_time_from_gps(gps_sec)
+
         # TODO: The timestamp here should come from SPAN, not the ROS system time.
-        navsat.header.stamp = rospy.Time.now()
+        navsat.header.stamp = rospy.Time(unix_sec)
         navsat.header.frame_id = self.odom_frame
 
         # Assume GPS - this isn't exposed
@@ -182,8 +188,12 @@ class NovatelPublisher(object):
             self.origin.z = inspvax.altitude
             self.pub_origin.publish(position=self.origin)
 
+        gps_sec = inspvax.header.gps_week * 7 * 24 * 3600 +\
+                1e-3 * inspvax.header.gps_week_milliseconds
+        unix_sec = unix_time_from_gps(gps_sec)
+
         odom = Odometry()
-        odom.header.stamp = rospy.Time.now()
+        odom.header.stamp = rospy.Time(unix_sec)
         odom.header.frame_id = self.odom_frame
         odom.child_frame_id = self.base_frame
         odom.pose.pose.position.x = utm_pos.easting - self.origin.x
@@ -196,7 +206,7 @@ class NovatelPublisher(object):
         self.orientation = tf.transformations.quaternion_from_euler(
                 radians(inspvax.roll),
                 radians(inspvax.pitch),
-                -radians(inspvax.azimuth), 'syxz'))
+                -radians(inspvax.azimuth), 'syxz')
         odom.pose.pose.orientation = Quaternion(*self.orientation)
         odom.pose.covariance[21] = self.orientation_covariance[0] = pow(2, inspvax.pitch_std)
         odom.pose.covariance[28] = self.orientation_covariance[4] = pow(2, inspvax.roll_std)
@@ -226,8 +236,13 @@ class NovatelPublisher(object):
 
     def corrimudata_handler(self, corrimudata):
         # TODO: Work out these covariances properly. Logs provide covariances in local frame, not body
+
+        gps_sec = corrimudata.header.gps_week * 7 * 24 * 3600 +\
+                1e-3 * corrimudata.header.gps_week_milliseconds
+        unix_sec = unix_time_from_gps(gps_sec)
+
         imu = Imu()
-        imu.header.stamp = rospy.Time.now()
+        imu.header.stamp = rospy.Time(unix_sec)
         imu.header.frame_id = self.base_frame
 
         # Populate orientation field with one from inspvax message.
