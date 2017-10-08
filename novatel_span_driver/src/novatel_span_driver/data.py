@@ -77,4 +77,4 @@ class DataPort(Port):
                 pkt_counters[header.id] = 0
             else:
                 pkt_counters[header.id] += 1
-                pkt_times[header.id] = header.gps_week_seconds  # only track times of msgs that are part of novatel msgs
+                pkt_times[header.id] = header.gps_week_milliseconds # only track times of msgs that are part of novatel msgs
