@@ -2,6 +2,11 @@
 Changelog for package novatel_span_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+101.0.2 (2017-10-16)
+--------------------
+* now driver can be used republish to recorded raw msg
+* Contributors: mfour
+
 101.0.1 (2017-10-08)
 --------------------
 * update with dumpable sock and short header msg
