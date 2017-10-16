@@ -35,7 +35,9 @@ from novatel_span_driver import wheel_velocity
 def main():
     rospy.init_node('novatel_span_driver')
 
-    bridge.init()
+    only_republish = rospy.get_param('~only_republish', False)
+    if not only_republish:
+        bridge.init()
 
     pub = publisher.NovatelPublisher()
 
