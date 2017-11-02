@@ -18,7 +18,7 @@ tracks:
     patches: null
     release_inc: '1'
     release_repo_url: null
-    release_tag: 101.0.2
+    release_tag: 101.0.3
     ros_distro: kinetic
     vcs_type: git
     vcs_uri: git@github.com:prclibo/novatel_span_driver.git
