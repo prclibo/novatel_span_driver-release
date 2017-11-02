@@ -43,7 +43,7 @@ def main():
 
     diag = diagnostics.NovatelDiagnostics()
 
-    if rospy.get_param('~enable_wheel_velocity', False):
+    if not only_republish and rospy.get_param('~enable_wheel_velocity', False):
         vel = wheel_velocity.NovatelWheelVelocity(bridge.ports['data'].sock)
 
     rospy.spin()
