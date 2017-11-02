@@ -1,0 +1,77 @@
+ros-kinetic-novatel-span-driver (101.0.3-0xenial) xenial; urgency=high
+
+  * Revert "101.0.3"
+    This reverts commit 9a770a73b2e886a8eb834e51d81b2279bc27f12b.
+  * 101.0.3
+  * updated changelog
+  * accept command array param
+  * fixed offline
+  * Contributors: Bo Li
+  * accept command array param
+  * fixed offline
+  * Contributors: Bo Li
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Wed, 01 Nov 2017 16:00:00 -0000
+
+ros-kinetic-novatel-span-driver (101.0.2-0xenial) xenial; urgency=high
+
+  * now driver can be used republish to recorded raw msg
+  * Contributors: mfour
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Sun, 15 Oct 2017 16:00:00 -0000
+
+ros-kinetic-novatel-span-driver (101.0.1-0xenial) xenial; urgency=high
+
+  * update with dumpable sock and short header msg
+  * sock can now dump received data to file
+  * improved to support novatel usb and onnew log_request option
+  * fix typo
+  * fixed typeo
+  * Contributors: Bo Li
+  * Merge remote-tracking branch 'origin/fix_rpy' into trunk
+  * Latch navsat/origin so that it is available to nodes that start after the NovAtel driver (#12 <https://github.com/prclibo/novatel_span_driver/issues/12>)
+  * Fix bad == when publishing IMU message (#19 <https://github.com/prclibo/novatel_span_driver/issues/19>)
+  * merge
+  * Remove commented-out line.
+  * Add support to serial connection and add example_serial.launch
+  * possibly fixed rpy interpretation
+  * Update diagnostics.py
+    diagnostic_msgs has not been imported, must use DiagnosticStatus directly.
+  * Contributors: A.Shigekane, Akio Shigekane, Bo Li, Mike Purvis, P. J. Reed, lemiant, libo24
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Sat, 07 Oct 2017 16:00:00 -0000
+
+ros-kinetic-novatel-span-driver (1.0.0-0xenial) xenial; urgency=high
+
+  * Add capture from INS PPP, default value for IMU rate, fix test, add docs to example launcher.
+  * Throttle wheelvelocity commands to 1Hz, as recommended by Novatel.
+  * Fix velx/y mixup, add diagnostic publisher.
+  * BESTPOSB -> BESTPOS, add diagnostic constants and shim class.
+  * Treat altitude as positive-up.
+  * Update messages to include header, fix header to match documentation.
+  * Add wheel velocity handler.
+  * Contributors: Mike Purvis
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Mon, 24 Nov 2014 16:00:00 -0000
+
+ros-kinetic-novatel-span-driver (0.2.0-0xenial) xenial; urgency=high
+
+  * Re-work the publisher class.
+  * Add a pcap for a SPAN fix.
+  * Tweaks to topic names.
+  * Add working rostest, fixes from pepify.
+  * Add roslaunch file check for example launcher.
+  * Add roslint test.
+  * Contributors: Mike Purvis
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Tue, 28 Oct 2014 16:00:00 -0000
+
+ros-kinetic-novatel-span-driver (0.1.0-0xenial) xenial; urgency=high
+
+  * Consolidation and reorganization of novatelcentral driver prepared by NovAtel
+    and published here: https://github.com/NovAtel-inc/rosnovatel
+  * Contributors: Mike Purvis
+
+ -- Mike Purvis <mpurvis@clearpathrobotics.com>  Thu, 23 Oct 2014 16:00:00 -0000
+
+
