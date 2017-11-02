@@ -2,6 +2,20 @@
 Changelog for package novatel_span_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+101.0.3 (2017-11-02)
+--------------------
+* Revert "101.0.3"
+  This reverts commit 9a770a73b2e886a8eb834e51d81b2279bc27f12b.
+* 101.0.3
+* updated changelog
+* accept command array param
+* fixed offline
+* Contributors: Bo Li
+
+* accept command array param
+* fixed offline
+* Contributors: Bo Li
+
 101.0.2 (2017-10-16)
 --------------------
 * now driver can be used republish to recorded raw msg
