@@ -177,9 +177,14 @@ def configure_receiver(port):
             rospy.loginfo("Sending IMU connection string to SPAN system.")
             port.send('connectimu ' + imu_connect['port'] + ' ' + imu_connect['type'] + '\r\n')
 
+        commands = receiver_config.get('command', [])
+        rospy.loginfo("Sending %i user-specified initialization commands to SPAN system." % len(commands))
+        for cmd in commands:
+            port.send(cmd + '\r\n')
+            rospy.logerr(cmd)
+
         logger = receiver_config.get('log_request', [])
         rospy.loginfo("Enabling %i log outputs from SPAN system." % len(logger))
-        port.send('unlogall\r\n')
         for log in logger:
             if str(logger[log]).lower() == 'new':
                 cmd = 'log ' + log + ' onnew' + '\r\n'
@@ -187,12 +192,6 @@ def configure_receiver(port):
                 cmd = 'log ' + log + ' ontime ' + str(logger[log]) + '\r\n'
             rospy.logerr(cmd)
             port.send(cmd)
-
-        commands = receiver_config.get('command', [])
-        rospy.loginfo("Sending %i user-specified initialization commands to SPAN system." % len(commands))
-        for cmd in commands:
-            port.send(cmd + ' ' + str(commands[cmd]) + '\r\n')
-            rospy.logerr(cmd + ' ' + str(commands[cmd]))
 
 
 def shutdown():
